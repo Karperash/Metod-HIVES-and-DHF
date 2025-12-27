@@ -1,0 +1,39 @@
+{
+  "algorithm_comparison": {
+    "GA": {
+      "final_consensus_level": 0.9067,
+      "compatibility_scores": {
+        "DM1": 0.9067,
+        "DM2": 0.9118,
+        "DM3": 0.9067
+      },
+      "dm_weights": {
+        "DM1": 0.371,
+        "DM2": 0.191,
+        "DM3": 0.438
+      }
+    },
+    "HHO": {
+      "final_consensus_level": 0.9073,
+      "compatibility_scores": {
+        "DM1": 0.9073,
+        "DM2": 0.9074,
+        "DM3": 0.9073
+      },
+      "dm_weights": {
+        "DM1": 0.3861,
+        "DM2": 0.1673,
+        "DM3": 0.4466
+      }
+    }
+  },
+  "best_algorithm": "HHO",
+  "best_overall_consensus": 0.9073,
+  "parameters_used": {
+    "desired_consensus": 1,
+    "criteria_count": 6,
+    "experts_count": 3
+  }
+}
+
+

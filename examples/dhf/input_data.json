@@ -1,0 +1,171 @@
+{
+  "problem_description": "Sustainable criteria weighting for steel company",
+  "criteria": ["ES", "SS", "EcS", "IP", "SA", "LTC"],
+  "dms": [
+    {
+      "id": "DM1",
+      "role": "Project Manager",
+      "pairwise_comparisons": {
+        "ES": {
+          "ES": { "membership": [0.5], "non_membership": [0.5] },
+          "SS": { "membership": [0.15], "non_membership": [0.8] },
+          "EcS": { "membership": [0.95, 0.85], "non_membership": [0.05, 0.1] },
+          "IP": { "membership": [0.7, 0.5], "non_membership": [0.2, 0.5] },
+          "SA": { "membership": [0.85, 0.7, 0.5], "non_membership": [0.1, 0.2, 0.5] },
+          "LTC": { "membership": [0.5], "non_membership": [0.5] }
+        },
+        "SS": {
+          "ES": { "membership": [0.85], "non_membership": [0.1] },
+          "SS": { "membership": [0.5], "non_membership": [0.5] },
+          "EcS": { "membership": [0.5], "non_membership": [0.5] },
+          "IP": { "membership": [0.85], "non_membership": [0.1] },
+          "SA": { "membership": [0.95, 0.85], "non_membership": [0.05, 0.1] },
+          "LTC": { "membership": [0.7, 0.5], "non_membership": [0.2, 0.5] }
+        },
+        "EcS": {
+          "ES": { "membership": [0.05, 0.15], "non_membership": [0.95, 0.8] },
+          "SS": { "membership": [0.5], "non_membership": [0.5] },
+          "EcS": { "membership": [0.5], "non_membership": [0.5] },
+          "IP": { "membership": [0.95, 0.85, 0.7], "non_membership": [0.05, 0.1, 0.2] },
+          "SA": { "membership": [0.3, 0.15], "non_membership": [0.6, 0.8] },
+          "LTC": { "membership": [0.15, 0.05], "non_membership": [0.8, 0.95] }
+        },
+        "IP": {
+          "ES": { "membership": [0.3, 0.5], "non_membership": [0.6, 0.5] },
+          "SS": { "membership": [0.15], "non_membership": [0.8] },
+          "EcS": { "membership": [0.05, 0.15, 0.3], "non_membership": [0.95, 0.8, 0.6] },
+          "IP": { "membership": [0.5], "non_membership": [0.5] },
+          "SA": { "membership": [0.3, 0.15, 0.05], "non_membership": [0.6, 0.8, 0.95] },
+          "LTC": { "membership": [0.5, 0.3], "non_membership": [0.5, 0.6] }
+        },
+        "SA": {
+          "ES": { "membership": [0.15, 0.3, 0.5], "non_membership": [0.8, 0.6, 0.5] },
+          "SS": { "membership": [0.05, 0.15], "non_membership": [0.95, 0.8] },
+          "EcS": { "membership": [0.7, 0.85], "non_membership": [0.2, 0.1] },
+          "IP": { "membership": [0.7, 0.85, 0.95], "non_membership": [0.2, 0.1, 0.05] },
+          "SA": { "membership": [0.5], "non_membership": [0.5] },
+          "LTC": { "membership": [0.05], "non_membership": [0.95] }
+        },
+        "LTC": {
+          "ES": { "membership": [0.5], "non_membership": [0.5] },
+          "SS": { "membership": [0.3, 0.5], "non_membership": [0.6, 0.5] },
+          "EcS": { "membership": [0.85, 0.95], "non_membership": [0.1, 0.05] },
+          "IP": { "membership": [0.5, 0.7, 0.85], "non_membership": [0.5, 0.2, 0.1] },
+          "SA": { "membership": [0.95], "non_membership": [0.05] },
+          "LTC": { "membership": [0.5], "non_membership": [0.5] }
+        }
+      }
+    },
+    {
+      "id": "DM2",
+      "role": "Sustainability Manager",
+      "pairwise_comparisons": {
+        "ES": {
+          "ES": { "membership": [0.5], "non_membership": [0.5] },
+          "SS": { "membership": [0.5, 0.3, 0.15], "non_membership": [0.5, 0.6, 0.8] },
+          "EcS": { "membership": [0.95, 0.85, 0.7], "non_membership": [0.05, 0.1, 0.2] },
+          "IP": { "membership": [0.7], "non_membership": [0.2] },
+          "SA": { "membership": [0.7, 0.5], "non_membership": [0.2, 0.5] },
+          "LTC": { "membership": [0.3, 0.15, 0.05], "non_membership": [0.6, 0.8, 0.95] }
+        },
+        "SS": {
+          "ES": { "membership": [0.5, 0.7, 0.85], "non_membership": [0.5, 0.2, 0.1] },
+          "SS": { "membership": [0.5], "non_membership": [0.5] },
+          "EcS": { "membership": [0.5, 0.3], "non_membership": [0.5, 0.6] },
+          "IP": { "membership": [0.7], "non_membership": [0.2] },
+          "SA": { "membership": [0.3, 0.15, 0.05], "non_membership": [0.6, 0.8, 0.95] },
+          "LTC": { "membership": [0.3, 0.15, 0.05], "non_membership": [0.6, 0.8, 0.95] }
+        },
+        "EcS": {
+          "ES": { "membership": [0.05, 0.15, 0.3], "non_membership": [0.95, 0.8, 0.6] },
+          "SS": { "membership": [0.5, 0.7], "non_membership": [0.5, 0.2] },
+          "EcS": { "membership": [0.5], "non_membership": [0.5] },
+          "IP": { "membership": [0.7], "non_membership": [0.2] },
+          "SA": { "membership": [0.3, 0.15], "non_membership": [0.6, 0.8] },
+          "LTC": { "membership": [0.05], "non_membership": [0.95] }
+        },
+        "IP": {
+          "ES": { "membership": [0.3], "non_membership": [0.6] },
+          "SS": { "membership": [0.3], "non_membership": [0.6] },
+          "EcS": { "membership": [0.3], "non_membership": [0.6] },
+          "IP": { "membership": [0.5], "non_membership": [0.5] },
+          "SA": { "membership": [0.15], "non_membership": [0.8] },
+          "LTC": { "membership": [0.5, 0.3], "non_membership": [0.5, 0.6] }
+        },
+        "SA": {
+          "ES": { "membership": [0.3, 0.5], "non_membership": [0.6, 0.5] },
+          "SS": { "membership": [0.7, 0.85, 0.95], "non_membership": [0.2, 0.1, 0.05] },
+          "EcS": { "membership": [0.7, 0.85], "non_membership": [0.2, 0.1] },
+          "IP": { "membership": [0.85], "non_membership": [0.1] },
+          "SA": { "membership": [0.5], "non_membership": [0.5] },
+          "LTC": { "membership": [0.7], "non_membership": [0.2] }
+        },
+        "LTC": {
+          "ES": { "membership": [0.7, 0.85, 0.95], "non_membership": [0.2, 0.1, 0.05] },
+          "SS": { "membership": [0.7, 0.85, 0.95], "non_membership": [0.2, 0.1, 0.05] },
+          "EcS": { "membership": [0.95], "non_membership": [0.05] },
+          "IP": { "membership": [0.5, 0.7], "non_membership": [0.5, 0.2] },
+          "SA": { "membership": [0.3], "non_membership": [0.6] },
+          "LTC": { "membership": [0.5], "non_membership": [0.5] }
+        }
+      }
+    },
+    {
+      "id": "DM3",
+      "role": "Investment Director",
+      "pairwise_comparisons": {
+        "ES": {
+          "ES": { "membership": [0.5], "non_membership": [0.5] },
+          "SS": { "membership": [0.85, 0.7, 0.5], "non_membership": [0.1, 0.2, 0.5] },
+          "EcS": { "membership": [0.3, 0.15, 0.05], "non_membership": [0.6, 0.8, 0.95] },
+          "IP": { "membership": [0.95], "non_membership": [0.05] },
+          "SA": { "membership": [0.15, 0.05], "non_membership": [0.8, 0.95] },
+          "LTC": { "membership": [0.3, 0.15, 0.05], "non_membership": [0.6, 0.8, 0.95] }
+        },
+        "SS": {
+          "ES": { "membership": [0.15, 0.3, 0.5], "non_membership": [0.8, 0.6, 0.5] },
+          "SS": { "membership": [0.5], "non_membership": [0.5] },
+          "EcS": { "membership": [0.5, 0.3], "non_membership": [0.5, 0.6] },
+          "IP": { "membership": [0.15, 0.05], "non_membership": [0.8, 0.95] },
+          "SA": { "membership": [0.85, 0.7, 0.5], "non_membership": [0.1, 0.2, 0.5] },
+          "LTC": { "membership": [0.3, 0.15], "non_membership": [0.6, 0.8] }
+        },
+        "EcS": {
+          "ES": { "membership": [0.7, 0.85, 0.95], "non_membership": [0.2, 0.1, 0.05] },
+          "SS": { "membership": [0.5, 0.7], "non_membership": [0.5, 0.2] },
+          "EcS": { "membership": [0.5], "non_membership": [0.5] },
+          "IP": { "membership": [0.85], "non_membership": [0.1] },
+          "SA": { "membership": [0.3, 0.15], "non_membership": [0.6, 0.8] },
+          "LTC": { "membership": [0.7, 0.5, 0.3], "non_membership": [0.2, 0.5, 0.6] }
+        },
+        "IP": {
+          "ES": { "membership": [0.05], "non_membership": [0.95] },
+          "SS": { "membership": [0.85, 0.95], "non_membership": [0.1, 0.05] },
+          "EcS": { "membership": [0.15], "non_membership": [0.8] },
+          "IP": { "membership": [0.5], "non_membership": [0.5] },
+          "SA": { "membership": [0.7], "non_membership": [0.2] },
+          "LTC": { "membership": [0.95, 0.85], "non_membership": [0.05, 0.1] }
+        },
+        "SA": {
+          "ES": { "membership": [0.85, 0.95], "non_membership": [0.1, 0.05] },
+          "SS": { "membership": [0.15, 0.3, 0.5], "non_membership": [0.8, 0.6, 0.5] },
+          "EcS": { "membership": [0.7, 0.85], "non_membership": [0.2, 0.1] },
+          "IP": { "membership": [0.3], "non_membership": [0.6] },
+          "SA": { "membership": [0.5], "non_membership": [0.5] },
+          "LTC": { "membership": [0.85, 0.7, 0.5], "non_membership": [0.1, 0.2, 0.5] }
+        },
+        "LTC": {
+          "ES": { "membership": [0.7, 0.85, 0.95], "non_membership": [0.2, 0.1, 0.05] },
+          "SS": { "membership": [0.7, 0.85], "non_membership": [0.2, 0.1] },
+          "EcS": { "membership": [0.3, 0.5, 0.7], "non_membership": [0.6, 0.5, 0.2] },
+          "IP": { "membership": [0.05, 0.15], "non_membership": [0.95, 0.8] },
+          "SA": { "membership": [0.15, 0.3, 0.5], "non_membership": [0.8, 0.6, 0.5] },
+          "LTC": { "membership": [0.5], "non_membership": [0.5] }
+        }
+      }
+    }
+  ],
+  "parameters": { "desired_consensus": 1, "population_size": 10, "max_iterations": 200 }
+}
+
+

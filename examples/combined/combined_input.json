@@ -1,0 +1,87 @@
+{
+  "hives": {
+    "alternatives": ["A1", "A2"],
+    "criteria": [
+      { "name": "C1", "type": "positive" },
+      { "name": "C2", "type": "positive" }
+    ],
+    "dms": [
+      {
+        "id": "DM1",
+        "scores": [
+          [10, 20],
+          [30, 40]
+        ]
+      }
+    ],
+    "experts": [
+      { "id": "DM1", "weights": [60, 40] },
+      { "id": "DM2", "weights": [50, 50] },
+      { "id": "DM3", "weights": [40, 60] }
+    ]
+  },
+  "dhf": {
+    "problem_description": "DHF pairwise comparisons used to optimize DM weights for consensus",
+    "criteria": ["C1", "C2"],
+    "dms": [
+      {
+        "id": "DM1",
+        "role": "Expert 1",
+        "pairwise_comparisons": {
+          "C1": {
+            "C1": { "membership": [0.5], "non_membership": [0.5] },
+            "C2": { "membership": [0.7], "non_membership": [0.2] }
+          },
+          "C2": {
+            "C1": { "membership": [0.3], "non_membership": [0.6] },
+            "C2": { "membership": [0.5], "non_membership": [0.5] }
+          }
+        }
+      },
+      {
+        "id": "DM2",
+        "role": "Expert 2",
+        "pairwise_comparisons": {
+          "C1": {
+            "C1": { "membership": [0.5], "non_membership": [0.5] },
+            "C2": { "membership": [0.5], "non_membership": [0.5] }
+          },
+          "C2": {
+            "C1": { "membership": [0.5], "non_membership": [0.5] },
+            "C2": { "membership": [0.5], "non_membership": [0.5] }
+          }
+        }
+      },
+      {
+        "id": "DM3",
+        "role": "Expert 3",
+        "pairwise_comparisons": {
+          "C1": {
+            "C1": { "membership": [0.5], "non_membership": [0.5] },
+            "C2": { "membership": [0.15], "non_membership": [0.8] }
+          },
+          "C2": {
+            "C1": { "membership": [0.85], "non_membership": [0.1] },
+            "C2": { "membership": [0.5], "non_membership": [0.5] }
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "desired_consensus": 0.907,
+      "max_iterations": 200,
+      "population_size": 20,
+      "max_iter": 200,
+      "search_agents_no": 15
+    }
+  },
+  "combined_parameters": {
+    "dhf_method": "HHO",
+    "influence_mode": "continuous",
+    "influence_min": 0.01,
+    "influence_max": 0.99,
+    "output_path": "outputs/combined_result.json"
+  }
+}
+
+
