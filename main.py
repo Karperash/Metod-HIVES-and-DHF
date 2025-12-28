@@ -55,6 +55,12 @@ def run_hives_from_json(json_path: str) -> dict:
 
 def _load_json(path: str | Path) -> dict:
     path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(
+            f"File not found: {path}\n"
+            f"Hint: If you're using rotation, make sure to run the method first without rotation "
+            f"to generate the required output file."
+        )
     with path.open("r", encoding="utf-8") as f:
         return json.load(f)
 
