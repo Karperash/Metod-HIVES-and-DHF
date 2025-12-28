@@ -49,11 +49,41 @@
 - Python 3.8+
 - NumPy
 
-### Установка зависимостей
+### Локальная установка
 
 ```bash
 pip install numpy
 ```
+
+Или используйте файл requirements.txt:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 🚀 Быстрый старт в Google Colab
+
+1. Откройте [Google Colab](https://colab.research.google.com/)
+2. Загрузите ноутбук `notebooks/colab/HIVES_DHF_Colab.ipynb` или используйте прямую ссылку:
+   - Скопируйте содержимое из `notebooks/colab/HIVES_DHF_Colab.ipynb`
+   - Или выполните в первой ячейке:
+
+```python
+# Клонируем репозиторий
+!git clone https://github.com/Karperash/Metod-HIVES-and-DHF.git
+%cd Metod-HIVES-and-DHF
+
+# Устанавливаем зависимости
+!pip install -q numpy
+
+# Запускаем пример
+!python main.py hives examples/hives/input.json
+```
+
+**Альтернативный способ (через GitHub):**
+1. Перейдите на https://github.com/Karperash/Metod-HIVES-and-DHF
+2. Откройте файл `notebooks/colab/HIVES_DHF_Colab.ipynb`
+3. Нажмите кнопку "Open in Colab" (если доступна) или скопируйте содержимое в новый Colab ноутбук
 
 ## 🚀 Использование
 
@@ -321,6 +351,7 @@ score_i = Σ(A_ij × gamma_scaled_j)
 - Подробная документация: `docs/README.md`
 - Примеры использования: `examples/`
 - Jupyter notebooks: `notebooks/`
+- **Инструкция для Google Colab**: `notebooks/colab/README_Colab.md` или используйте готовый ноутбук `notebooks/colab/HIVES_DHF_Colab.ipynb`
 
 ## 👥 Авторы
 
