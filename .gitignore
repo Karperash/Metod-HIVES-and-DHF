@@ -37,7 +37,6 @@ ENV/
 .ipynb_checkpoints
 
 # Output files and generated data
-outputs/
 Resulst/
 comparison_results.json
 my_dhfs_data.json

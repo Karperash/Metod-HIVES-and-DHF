@@ -1,0 +1,2404 @@
+{
+  "hives": {
+    "alternatives": [
+      "A1",
+      "A2",
+      "A3"
+    ],
+    "criteria": [
+      {
+        "name": "Criterion_1",
+        "type": "positive"
+      },
+      {
+        "name": "Criterion_2",
+        "type": "positive"
+      },
+      {
+        "name": "Criterion_3",
+        "type": "positive"
+      },
+      {
+        "name": "Criterion_4",
+        "type": "positive"
+      },
+      {
+        "name": "Criterion_5",
+        "type": "positive"
+      },
+      {
+        "name": "Criterion_6",
+        "type": "positive"
+      },
+      {
+        "name": "Criterion_7",
+        "type": "positive"
+      },
+      {
+        "name": "Criterion_8",
+        "type": "positive"
+      }
+    ],
+    "dms": [
+      {
+        "id": "DM1",
+        "scores": [
+          [
+            9,
+            78,
+            66,
+            44,
+            44,
+            86,
+            9,
+            70
+          ],
+          [
+            21,
+            10,
+            53,
+            98,
+            74,
+            77,
+            72,
+            79
+          ],
+          [
+            52,
+            13,
+            84,
+            46,
+            51,
+            38,
+            19,
+            93
+          ]
+        ]
+      },
+      {
+        "id": "DM2",
+        "scores": [
+          [
+            79,
+            65,
+            41,
+            83,
+            55,
+            45,
+            46,
+            23
+          ],
+          [
+            10,
+            56,
+            89,
+            7,
+            86,
+            83,
+            28,
+            64
+          ],
+          [
+            17,
+            76,
+            71,
+            36,
+            7,
+            98,
+            45,
+            90
+          ]
+        ]
+      },
+      {
+        "id": "DM3",
+        "scores": [
+          [
+            68,
+            78,
+            76,
+            20,
+            37,
+            47,
+            50,
+            5
+          ],
+          [
+            55,
+            16,
+            75,
+            69,
+            93,
+            75,
+            37,
+            97
+          ],
+          [
+            42,
+            33,
+            91,
+            38,
+            8,
+            47,
+            80,
+            19
+          ]
+        ]
+      },
+      {
+        "id": "DM4",
+        "scores": [
+          [
+            47,
+            13,
+            69,
+            48,
+            34,
+            23,
+            57,
+            67
+          ],
+          [
+            95,
+            44,
+            17,
+            84,
+            63,
+            71,
+            10,
+            32
+          ],
+          [
+            77,
+            84,
+            44,
+            81,
+            85,
+            39,
+            90,
+            29
+          ]
+        ]
+      }
+    ],
+    "experts": [
+      {
+        "id": "DM1",
+        "weights": [
+          17.203507526244014,
+          3.522708779151472,
+          5.039040178006121,
+          0.18557904386767357,
+          19.835822173327173,
+          16.758742949360414,
+          17.77494185352124,
+          19.6796574965219
+        ]
+      },
+      {
+        "id": "DM2",
+        "weights": [
+          12.232149488149952,
+          15.159486118785138,
+          3.726212673962135,
+          3.0527365914528084,
+          17.815916084715568,
+          12.556812216976565,
+          15.066059872243622,
+          20.39062695371421
+        ]
+      },
+      {
+        "id": "DM3",
+        "weights": [
+          20.200426752290884,
+          17.618114653691613,
+          17.797222695547475,
+          9.673459074349253,
+          0.980802649359953,
+          13.898886095854035,
+          6.829331734825566,
+          13.001756344081214
+        ]
+      },
+      {
+        "id": "DM4",
+        "weights": [
+          22.919564625687798,
+          6.282835547167067,
+          1.5658174874856954,
+          7.557034301655446,
+          7.884950635416282,
+          17.776873333717123,
+          14.960028636034837,
+          21.052895432835754
+        ]
+      }
+    ],
+    "parameters": {
+      "alpha": 0.95,
+      "B": 2
+    }
+  },
+  "dhf": {
+    "problem_description": "Generated DHFS data with 8 criteria and 4 experts",
+    "criteria": [
+      "Criterion_1",
+      "Criterion_2",
+      "Criterion_3",
+      "Criterion_4",
+      "Criterion_5",
+      "Criterion_6",
+      "Criterion_7",
+      "Criterion_8"
+    ],
+    "dms": [
+      {
+        "id": "DM1",
+        "role": "Project Manager",
+        "pairwise_comparisons": {
+          "Criterion_1": {
+            "Criterion_1": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            }
+          },
+          "Criterion_2": {
+            "Criterion_1": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            }
+          },
+          "Criterion_3": {
+            "Criterion_1": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            }
+          },
+          "Criterion_4": {
+            "Criterion_1": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            }
+          },
+          "Criterion_5": {
+            "Criterion_1": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            }
+          },
+          "Criterion_6": {
+            "Criterion_1": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            }
+          },
+          "Criterion_7": {
+            "Criterion_1": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            }
+          },
+          "Criterion_8": {
+            "Criterion_1": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": "DM2",
+        "role": "Sustainability Manager",
+        "pairwise_comparisons": {
+          "Criterion_1": {
+            "Criterion_1": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            }
+          },
+          "Criterion_2": {
+            "Criterion_1": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            }
+          },
+          "Criterion_3": {
+            "Criterion_1": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            }
+          },
+          "Criterion_4": {
+            "Criterion_1": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            }
+          },
+          "Criterion_5": {
+            "Criterion_1": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            }
+          },
+          "Criterion_6": {
+            "Criterion_1": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            }
+          },
+          "Criterion_7": {
+            "Criterion_1": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            }
+          },
+          "Criterion_8": {
+            "Criterion_1": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": "DM3",
+        "role": "Investment Director",
+        "pairwise_comparisons": {
+          "Criterion_1": {
+            "Criterion_1": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            }
+          },
+          "Criterion_2": {
+            "Criterion_1": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            }
+          },
+          "Criterion_3": {
+            "Criterion_1": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            }
+          },
+          "Criterion_4": {
+            "Criterion_1": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            }
+          },
+          "Criterion_5": {
+            "Criterion_1": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            }
+          },
+          "Criterion_6": {
+            "Criterion_1": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            }
+          },
+          "Criterion_7": {
+            "Criterion_1": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            }
+          },
+          "Criterion_8": {
+            "Criterion_1": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": "DM4",
+        "role": "Technical Expert",
+        "pairwise_comparisons": {
+          "Criterion_1": {
+            "Criterion_1": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            }
+          },
+          "Criterion_2": {
+            "Criterion_1": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            }
+          },
+          "Criterion_3": {
+            "Criterion_1": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            }
+          },
+          "Criterion_4": {
+            "Criterion_1": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.7
+              ],
+              "non_membership": [
+                0.2
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            }
+          },
+          "Criterion_5": {
+            "Criterion_1": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            }
+          },
+          "Criterion_6": {
+            "Criterion_1": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            }
+          },
+          "Criterion_7": {
+            "Criterion_1": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            }
+          },
+          "Criterion_8": {
+            "Criterion_1": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_2": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_3": {
+              "membership": [
+                0.95
+              ],
+              "non_membership": [
+                0.05
+              ]
+            },
+            "Criterion_4": {
+              "membership": [
+                0.05
+              ],
+              "non_membership": [
+                0.95
+              ]
+            },
+            "Criterion_5": {
+              "membership": [
+                0.3
+              ],
+              "non_membership": [
+                0.6
+              ]
+            },
+            "Criterion_6": {
+              "membership": [
+                0.85
+              ],
+              "non_membership": [
+                0.1
+              ]
+            },
+            "Criterion_7": {
+              "membership": [
+                0.15
+              ],
+              "non_membership": [
+                0.8
+              ]
+            },
+            "Criterion_8": {
+              "membership": [
+                0.5
+              ],
+              "non_membership": [
+                0.5
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "desired_consensus": 0.907,
+      "population_size": 20,
+      "max_iterations": 200,
+      "SearchAgents_no": 10,
+      "Max_iter": 100
+    }
+  },
+  "combined_parameters": {
+    "dhf_method": "HHO"
+  }
+}
