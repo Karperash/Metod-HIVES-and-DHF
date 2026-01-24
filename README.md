@@ -11,6 +11,7 @@
 - [Формат входных данных](#формат-входных-данных)
 - [Описание методов](#описание-методов)
 - [Примеры](#примеры)
+- [Обновление репозитория на GitHub](#обновление-репозитория-на-github)
 
 ## 📖 Описание проекта
 
@@ -368,6 +369,101 @@ score_i = Σ(A_ij × gamma_scaled_j)
 Итоговые веса критериев:
 - Вычисляются на основе λ-матрицы и весов критериев у экспертов
 - Масштабируются до суммы 100%
+
+## 🔄 Обновление репозитория на GitHub
+
+Как **полностью обновить** [репозиторий](https://github.com/Karperash/Metod-HIVES-and-DHF): в GitHub окажется ровно то, что в проекте (лишнее будет удалено, новое — добавлено).
+
+### Что понадобится
+
+- **Git** установлен, в проекте выполнен `git init` и настроен `origin`:
+  ```bash
+  git remote -v
+  # origin  https://github.com/Karperash/Metod-HIVES-and-DHF.git (fetch)
+  # origin  https://github.com/Karperash/Metod-HIVES-and-DHF.git (push)
+  ```
+- **Доступ к GitHub**: логин/пароль или токен, либо SSH-ключ (если репо не публичный или есть ограничения).
+
+---
+
+### Способ 1: скрипт `update_repo.ps1`
+
+В **PowerShell** откройте **корень проекта** (папка с `main.py`) и выполните:
+
+```powershell
+.\update_repo.ps1
+```
+
+Скрипт:
+
+1. Снимает с отслеживания `outputs/`, `outputsTest/`, `Resulst/`, `comparison_results.json`, `my_dhfs_data.json` (если они есть в репо).
+2. Делает `git add -A` — все новые, изменённые и удалённые файлы.
+3. Показывает `git status`.
+4. Спрашивает **«Commit? (y/n)»** — при `y` создаёт коммит.
+
+**Загрузка в GitHub вручную:**
+
+```powershell
+git push origin main
+```
+
+Без вопроса перед коммитом (например, в скриптах):
+
+```powershell
+.\update_repo.ps1 -Force
+```
+
+---
+
+### Способ 2: команды вручную
+
+В корне проекта:
+
+```powershell
+# 1) Перестать отслеживать то, что в .gitignore (если уже в репо)
+git rm -r --cached outputs outputsTest Resulst 2>$null
+git rm --cached comparison_results.json my_dhfs_data.json 2>$null
+
+# 2) Взять все изменения (в т.ч. удаления)
+git add -A
+
+# 3) Посмотреть, что попадёт в коммит
+git status
+
+# 4) Создать коммит
+git commit -m "Sync repo with project: ..."
+
+# 5) Отправить на GitHub
+git push origin main
+```
+
+---
+
+### Если `git push` просит логин/пароль
+
+- **HTTPS**: используйте [Personal Access Token](https://github.com/settings/tokens) вместо пароля.
+- **SSH**: настройте ключ и замените `origin` на  
+  `git@github.com:Karperash/Metod-HIVES-and-DHF.git`.
+
+---
+
+### Если в GitHub есть коммиты, которых нет у вас
+
+Сначала подтяните их и только потом пушите:
+
+```powershell
+git pull origin main --rebase
+git push origin main
+```
+
+Если появятся конфликты — их нужно разрешить вручную, затем `git add` и `git rebase --continue` (или `git merge --continue`).
+
+---
+
+### Что окажется в репозитории
+
+- Исходный код: `main.py`, `hives_dhf/`, `examples/`, `legacy/`, `README.md`, `requirements.txt`, `.gitignore`, `update_repo.ps1`.
+- **Не** попадут (из-за `.gitignore`): `outputs/`, `outputsTest/`, `Resulst/`, `comparison_results.json`, `my_dhfs_data.json`, `__pycache__/` и т.п.
 
 ## 📚 Дополнительная информация
 

@@ -317,7 +317,7 @@ def compat3(W, Judgments, Judgments2): # функция, которая агре
 
 
 def genetic_algorithm_exact(Judgments_m, Judgments_n, criteria,
-                            desired_consensus=0.907, population_size=20, max_iterations=500):
+                            desired_consensus=1, population_size=20, max_iterations=500):
     print("\n Запуск Генетического Алгоритма")
 
     num_experts = Judgments_m.shape[3]
@@ -540,7 +540,7 @@ def HHO_optimization(Judgments_m, Judgments_n, criteria,
     return best_weights, best_fitness, best_compatibility
 
 
-def generate_and_save_dhfs_json(output_file, n_criteria=6, n_experts=3):
+def generate_and_save_dhfs_json(output_file, n_criteria=6, n_experts=4):
     """
     Генерация тестовых данных DHFS с произвольным количеством критериев и экспертов
     """
@@ -634,8 +634,8 @@ def main():
     print("=" * 50)
 
     # Генерация тестовых данных
-    n_criteria = 7
-    n_experts = 5
+    n_criteria = 6
+    n_experts = 4
 
     generate_and_save_dhfs_json("my_dhfs_data.json", n_criteria=n_criteria, n_experts=n_experts)
 
