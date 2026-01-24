@@ -143,6 +143,29 @@ python main.py compare-order examples/combined/combined_input_program.json
 - DHF → HIVES (обычный порядок)
 - HIVES → DHF (обратный порядок)
 
+### 6. Pipeline: замена эксперта (step2 → compat3 → GA+HHO → HIVES)
+
+```bash
+python main.py pipeline path/to/combined_input.json
+```
+
+Полный пайплайн с заменой эксперта (5→4):
+1. Формирует **step2** — combined JSON без `predecessor_id` (4 эксперта)
+2. Проверяет консенсус через **compat3** (равномерные веса)
+3. Запускает **GA** и **HHO** отдельно (с опциональным seed начальных весов)
+4. **HIVES** с весами от GA и от HHO + плавная замена (smooth replacement)
+5. Сохраняет: `*_step2.json`, `*_HIVES_GA.json`, `*_HIVES_HHO.json`
+
+Требуется блок `rotation` в JSON (`predecessor_id`, `new_id`, `alpha`, `predecessor_old_lambdas_path`). В `combined_parameters` можно задать `step2_output_path`, `output_path_ga`, `output_path_hho`.
+
+### 7. Генератор данных + compat3 → HIVES → DHF → compat3
+
+```bash
+python main.py gen-compat-hives-dhf-compat --criteria 8 --experts 4 --alternatives 3 --save-input outputs/Input.json -o outputs/out.json
+```
+
+Генерирует синтетические HIVES+DHF данные, прогоняет compat3 до/после DHF, сохраняет вход (`--save-input`) и результат (`-o`).
+
 ## 📝 Формат входных данных
 
 ### Для HIVES (отдельно)

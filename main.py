@@ -108,10 +108,113 @@ def _maybe_load_predecessor_old_lambdas(
     row = lambdas.get(predecessor_id)
     if row is None:
         raise ValueError(f"{path}: predecessor_id {predecessor_id!r} not found in lambdas")
-    try:
-        return np.array([float(row[c]) for c in criteria_names], dtype=float)
-    except KeyError as e:
-        raise ValueError(f"{path}: missing criterion key in predecessor lambdas: {e}") from e
+
+    def _key_variants(k: str) -> list[str]:
+        # Allow some common renamings between runs (e.g. "Criterion_1" vs "Criterion 1")
+        variants = [k]
+        if "_" in k:
+            variants.append(k.replace("_", " "))
+        if k.startswith("Criterion_"):
+            variants.append("Criterion " + k.split("_", 1)[1])
+        return list(dict.fromkeys(variants))
+
+    out = []
+    missing: list[str] = []
+    for c in criteria_names:
+        found = False
+        for kk in _key_variants(c):
+            if kk in row:
+                out.append(float(row[kk]))
+                found = True
+                break
+        if not found:
+            missing.append(c)
+
+    if missing:
+        raise ValueError(
+            f"{path}: predecessor lambdas keys do not match current criteria names. "
+            f"Missing (first 5): {missing[:5]} (total {len(missing)})."
+        )
+    return np.array(out, dtype=float)
+
+
+def _maybe_load_initial_influence_from_result(
+    path: str | None,
+    expert_ids: list[str],
+) -> np.ndarray | None:
+    """
+    Reads previous run result JSON and extracts expert influence weights vector aligned to expert_ids.
+    Accepts (best-effort):
+      - out["dhf"]["influence"] as {id: weight}
+      - out["influence"] as {id: weight}
+    Returns None if not found.
+    """
+    if not path:
+        return None
+    data = _load_json(path)
+    influence = None
+    if isinstance(data.get("dhf"), dict) and isinstance(data["dhf"].get("influence"), dict):
+        influence = data["dhf"]["influence"]
+    elif isinstance(data.get("influence"), dict):
+        influence = data["influence"]
+    if not isinstance(influence, dict):
+        return None
+
+    w = []
+    for eid in expert_ids:
+        if eid not in influence:
+            return None
+        w.append(float(influence[eid]))
+    w = np.asarray(w, dtype=float)
+    s = float(w.sum())
+    if s <= 0:
+        return None
+    return w / s
+
+
+def _filter_dms_by_ids(dms: list[dict], keep_ids: set[str]) -> list[dict]:
+    return [dm for dm in dms if str(dm.get("id")) in keep_ids]
+
+
+def _build_step2_combined_input(
+    combined: dict,
+    predecessor_id: str,
+    keep_ids: list[str],
+) -> dict:
+    """
+    Creates a "step2" combined input JSON:
+    - removes predecessor_id from dhf.dms and hives.experts
+    - keeps only keep_ids (order preserved as in keep_ids)
+    - leaves hives.dms untouched unless it looks like it matches experts ids (then filters too)
+    """
+    keep_set = set(keep_ids)
+    if predecessor_id in keep_set:
+        raise ValueError("keep_ids must not contain predecessor_id")
+
+    hives = dict(combined["hives"])
+    dhf = dict(combined["dhf"])
+
+    # ---- DHF side: always filter dms ----
+    dhf_dms = list(dhf.get("dms") or [])
+    dhf["dms"] = _filter_dms_by_ids(dhf_dms, keep_set)
+
+    # ---- HIVES side: filter experts if present ----
+    if "experts" in hives and hives["experts"] is not None:
+        experts = list(hives["experts"])
+        experts_by_id = {str(e["id"]): e for e in experts}
+        hives["experts"] = [experts_by_id[eid] for eid in keep_ids if eid in experts_by_id]
+
+    # Optionally filter hives.dms if they match expert IDs (common "DM==expert" case).
+    if "dms" in hives and isinstance(hives["dms"], list) and hives["dms"]:
+        dm_ids = [str(x.get("id")) for x in hives["dms"]]
+        # Heuristic: filter only if there is a meaningful overlap (avoid deleting sole DM used for scores).
+        if any(did in keep_set or did == predecessor_id for did in dm_ids) and len(hives["dms"]) > 1:
+            hives["dms"] = _filter_dms_by_ids(list(hives["dms"]), keep_set)
+
+    out = dict(combined)
+    out["hives"] = hives
+    out["dhf"] = dhf
+    return out
 
 
 def run_combined_from_json(json_path: str) -> dict:
@@ -344,6 +447,214 @@ def _lambdas_to_dict(lambdas: np.ndarray | None, expert_ids: list[str], criteria
     for i, eid in enumerate(expert_ids):
         out[eid] = {crit_names[j]: float(lambdas[i, j]) for j in range(len(crit_names))}
     return out
+
+
+def run_pipeline_replace_ga_hho(json_path: str) -> dict:
+    """
+    End-to-end pipeline matching the requested structure:
+      - Load combined input (can contain 5 experts: 4 active + 1 reserve)
+      - Build step2 combined input with 4 experts by removing predecessor_id
+      - Check consensus via compat3 (baseline + optional initial weights)
+      - Run GA and HHO separately (optionally seeded with initial weights)
+      - Run HIVES with GA weights and with HHO weights (and apply smooth replacement)
+      - Save: step2 input, HIVES+GA result, HIVES+HHO result
+    """
+    data = _load_json(json_path)
+    if "rotation" not in data:
+        raise ValueError("pipeline requires 'rotation' block (predecessor_id, new_id, alpha, predecessor_old_lambdas_path)")
+
+    rotation = data["rotation"]
+    predecessor_id = str(rotation["predecessor_id"])
+    new_id = str(rotation["new_id"])
+    alpha = float(rotation["alpha"])
+    prev_path = rotation.get("predecessor_old_lambdas_path")
+
+    params = data.get("combined_parameters") or {}
+    influence_mode = str(params.get("influence_mode", "continuous"))
+    influence_min = float(params.get("influence_min", 0.01))
+    influence_max = float(params.get("influence_max", 0.99))
+
+    # Output paths
+    step2_path = str(params.get("step2_output_path", "outputs/step2_combined.json"))
+    out_ga_path = str(params.get("output_path_ga", "outputs/result_hives_ga.json"))
+    out_hho_path = str(params.get("output_path_hho", "outputs/result_hives_hho.json"))
+
+    # Expert IDs in input (prefer HIVES experts, else DHF DMs)
+    hives_data = data["hives"]
+    dhf_data = data["dhf"]
+    if "experts" in hives_data and hives_data["experts"]:
+        input_expert_ids = [str(e["id"]) for e in hives_data["experts"]]
+    else:
+        input_expert_ids = [str(dm["id"]) for dm in (dhf_data.get("dms") or [])]
+
+    if predecessor_id not in input_expert_ids:
+        raise ValueError(f"predecessor_id {predecessor_id!r} must be present among experts in the input")
+    if new_id not in input_expert_ids:
+        raise ValueError(f"new_id {new_id!r} must be present among experts in the input")
+
+    # Build "step2" experts = all except predecessor_id (keeps reserve/new_id)
+    keep_ids = [eid for eid in input_expert_ids if eid != predecessor_id]
+    if new_id not in keep_ids:
+        raise ValueError("Internal error: new_id must be kept in step2")
+
+    step2_combined = _build_step2_combined_input(data, predecessor_id=predecessor_id, keep_ids=keep_ids)
+    Path(step2_path).write_text(json.dumps(step2_combined, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"Saved step2 combined input (4 experts) to: {step2_path}")
+
+    # Prepare HIVES problem from step2
+    problem = load_decision_problem_from_data(step2_combined["hives"])
+    A = problem.aggregated_performance()
+    W = problem.weights_matrix()
+    expert_ids = [e.id for e in problem.experts] if problem.experts else [f"DM{i+1}" for i in range(W.shape[0])]
+
+    # Ensure DHF ids align with step2 experts
+    jm, jn, _crit, dm_ids = dhf_json_to_matrices(step2_combined["dhf"])
+    if set(dm_ids) != set(expert_ids):
+        raise ValueError(
+            "IDs mismatch in step2: DHF dms ids must match HIVES experts ids. "
+            f"DHF={dm_ids}, HIVES={expert_ids}"
+        )
+    # Align DHF matrices DM order to expert_ids order if needed
+    if dm_ids != expert_ids:
+        idx = {dm_id: i for i, dm_id in enumerate(dm_ids)}
+        order = [idx[eid] for eid in expert_ids]
+        jm = jm[:, :, :, order]
+        jn = jn[:, :, :, order]
+        dm_ids = expert_ids
+
+    # Load predecessor old lambdas row from previous results.
+    # If the referenced file is incompatible (different criteria naming/size), fall back to
+    # computing predecessor lambdas from the original (pre-step2) group contained in the input.
+    criteria_names = [c.name for c in problem.criteria]
+    pred_old_row = None
+    try:
+        pred_old_row = _maybe_load_predecessor_old_lambdas(prev_path, predecessor_id, criteria_names)
+    except Exception as e:
+        print(f"[pipeline] WARNING: cannot load predecessor lambdas from {prev_path!r}: {e}")
+        print("[pipeline]          Falling back to computing predecessor lambdas from the input group (before step2).")
+
+    if pred_old_row is None:
+        # Compute from the original group in input JSON (before removing predecessor_id)
+        original_problem = load_decision_problem_from_data(data["hives"])
+        W0 = original_problem.weights_matrix()
+        expert_ids0 = (
+            [e.id for e in original_problem.experts]
+            if original_problem.experts
+            else [f"DM{i+1}" for i in range(W0.shape[0])]
+        )
+        if predecessor_id not in expert_ids0:
+            raise ValueError(
+                "pipeline fallback failed: predecessor_id is not present in input hives.experts "
+                f"(predecessor_id={predecessor_id!r})"
+            )
+        # A is not needed for lambdas, but hives_rank expects it; reuse aggregated performance.
+        A0 = original_problem.aggregated_performance()
+        base_res = hives_rank(A=A0, W=W0, influence=None, expert_ids=expert_ids0)
+        pred_idx = expert_ids0.index(predecessor_id)
+        pred_old_row = np.asarray(base_res["lambdas_base"][pred_idx, :], dtype=float)
+        if pred_old_row.shape[0] != len(criteria_names):
+            raise ValueError(
+                "pipeline fallback failed: predecessor lambdas length does not match step2 criteria count "
+                f"({pred_old_row.shape[0]} vs {len(criteria_names)})"
+            )
+
+    smooth_replacement = dict(
+        predecessor_id=predecessor_id,
+        new_id=new_id,
+        alpha=alpha,
+        predecessor_old_lambdas_row=pred_old_row,
+    )
+
+    # Optional: initial (non-equal) weights from previous result file, restricted to step2 experts
+    initial_influence_full = _maybe_load_initial_influence_from_result(prev_path, input_expert_ids)
+    initial_influence = None
+    if initial_influence_full is not None:
+        idx_full = {eid: i for i, eid in enumerate(input_expert_ids)}
+        w = np.array([initial_influence_full[idx_full[eid]] for eid in expert_ids], dtype=float)
+        s = float(w.sum())
+        if s > 0:
+            initial_influence = w / s
+
+    # Step 6: consensus check (compat3)
+    uniform = np.ones(len(expert_ids), dtype=float) / len(expert_ids)
+    compat_uniform = compat3(uniform, jm, jn)
+    consensus_uniform = float(min(compat_uniform))
+    print(f"[STEP6] Consensus (uniform weights): {consensus_uniform:.6f}")
+
+    consensus_initial = None
+    if initial_influence is not None:
+        compat_init = compat3(initial_influence, jm, jn)
+        consensus_initial = float(min(compat_init))
+        print(f"[STEP6] Consensus (initial weights from prev result): {consensus_initial:.6f}")
+
+    # Step 7+8+9: GA and HHO separately, then HIVES
+    def _run_one(method: str, out_path: str) -> dict:
+        dhf_res = optimize_expert_weights(
+            step2_combined["dhf"],
+            method=method,  # GA or HHO
+            initial_weights=initial_influence,
+        )
+        influence = np.array([dhf_res.best_weights[dm_ids.index(eid)] for eid in expert_ids], dtype=float)
+        compat_after = compat3(influence, jm, jn)
+        consensus_after = float(min(compat_after))
+
+        res_hives = hives_rank(
+            A=A,
+            W=W,
+            influence=influence,
+            influence_mode=influence_mode,
+            influence_min=influence_min,
+            influence_max=influence_max,
+            expert_ids=expert_ids,
+            smooth_replacement=smooth_replacement,
+        )
+
+        out = dict(
+            pipeline=dict(
+                input_json=str(json_path),
+                step2_json=str(step2_path),
+                predecessor_id=predecessor_id,
+                new_id=new_id,
+                alpha=alpha,
+                expert_ids=expert_ids,
+            ),
+            consensus=dict(
+                uniform=dict(level=consensus_uniform, compatibilities={expert_ids[i]: float(compat_uniform[i]) for i in range(len(expert_ids))}),
+                initial=(
+                    None
+                    if consensus_initial is None
+                    else dict(level=consensus_initial, weights={expert_ids[i]: float(initial_influence[i]) for i in range(len(expert_ids))})
+                ),
+                after=dict(level=consensus_after, compatibilities={expert_ids[i]: float(compat_after[i]) for i in range(len(expert_ids))}),
+            ),
+            dhf=dict(
+                method=dhf_res.method,
+                best_consensus=float(dhf_res.best_consensus),
+                influence={expert_ids[i]: float(influence[i]) for i in range(len(expert_ids))},
+                compatibility={dhf_res.dm_ids[i]: float(dhf_res.compatibility[i]) for i in range(len(dhf_res.dm_ids))}
+                if dhf_res.compatibility
+                else {},
+            ),
+            hives=dict(
+                gamma=[float(x) for x in res_hives["gamma"]],
+                gamma_scaled=[float(x) for x in res_hives["gamma_scaled"]],
+                alt_scores=[float(x) for x in res_hives["alt_scores"]],
+                ranking_1_based=[int(x) for x in (res_hives["ranking"] + 1)],
+            ),
+            lambdas=dict(
+                base=_lambdas_to_dict(res_hives.get("lambdas_base"), expert_ids, problem.criteria),
+                final=_lambdas_to_dict(res_hives.get("lambdas"), expert_ids, problem.criteria),
+            ),
+        )
+
+        Path(out_path).write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"Saved HIVES+{method} result to: {out_path}")
+        return out
+
+    out_ga = _run_one("GA", out_ga_path)
+    out_hho = _run_one("HHO", out_hho_path)
+
+    return dict(step2_path=step2_path, ga=out_ga_path, hho=out_hho_path)
 
 
 def run_experiment(json_path: str) -> dict:
@@ -837,6 +1148,239 @@ def run_hives_compat3_dhf(json_path: str) -> dict:
     return out
 
 
+def _generate_dhf_payload(criteria_names: list[str], dm_ids: list[str], seed: int = 42) -> dict:
+    """
+    Generate DHF payload compatible with hives_dhf.dhf_consensus (criteria + dms[].pairwise_comparisons).
+    Deterministic by seed.
+    """
+    rng = np.random.default_rng(int(seed))
+
+    # Same scale as legacy/main4.py generator
+    ifn = [
+        [0.05, 0.95],
+        [0.15, 0.80],
+        [0.30, 0.60],
+        [0.50, 0.50],
+        [0.70, 0.20],
+        [0.85, 0.10],
+        [0.95, 0.05],
+    ]
+    pick = [0, 1, 2, 4, 5, 6]
+
+    roles = [
+        "Project Manager",
+        "Sustainability Manager",
+        "Investment Director",
+        "Technical Expert",
+        "Financial Analyst",
+        "Quality Assurance",
+    ]
+
+    dms = []
+    for dm_idx, dm_id in enumerate(dm_ids):
+        comparisons: dict[str, dict[str, dict[str, list[float]]]] = {}
+        for i, ci in enumerate(criteria_names):
+            comparisons[ci] = {}
+            for j, cj in enumerate(criteria_names):
+                if i == j:
+                    comparisons[ci][cj] = {"membership": [0.5], "non_membership": [0.5]}
+                else:
+                    idx = int(rng.choice(pick))
+                    m_val = float(ifn[idx][0])
+                    n_val = float(ifn[idx][1])
+                    # Ensure m+n <= 1
+                    if m_val + n_val > 1.0:
+                        s = m_val + n_val
+                        m_val /= s
+                        n_val /= s
+                    comparisons[ci][cj] = {"membership": [m_val], "non_membership": [n_val]}
+
+        dms.append(
+            dict(
+                id=str(dm_id),
+                role=roles[dm_idx % len(roles)],
+                pairwise_comparisons=comparisons,
+            )
+        )
+
+    return dict(
+        problem_description=f"Generated DHFS data with {len(criteria_names)} criteria and {len(dm_ids)} experts",
+        criteria=list(criteria_names),
+        dms=dms,
+        parameters=dict(
+            desired_consensus=0.907,
+            population_size=20,
+            max_iterations=200,
+            SearchAgents_no=10,
+            Max_iter=100,
+        ),
+    )
+
+
+def _generate_hives_payload(
+    criteria_names: list[str],
+    dm_ids: list[str],
+    alternatives: list[str],
+    seed: int = 42,
+) -> dict:
+    """
+    Generate HIVES payload compatible with hives_dhf.json_input.load_decision_problem_from_data().
+    """
+    rng = np.random.default_rng(int(seed))
+    n_alt = len(alternatives)
+    n_crit = len(criteria_names)
+
+    # Generate 1 DM score matrix per DM_id (alt x crit), then HIVES will aggregate by mean
+    dms = []
+    for dm_id in dm_ids:
+        scores = rng.integers(low=1, high=101, size=(n_alt, n_crit)).tolist()
+        dms.append(dict(id=str(dm_id), scores=scores))
+
+    # Generate per-expert criteria weights (sum=100)
+    experts = []
+    for dm_id in dm_ids:
+        w = rng.random(n_crit)
+        w = (w / w.sum()) * 100.0
+        experts.append(dict(id=str(dm_id), weights=[float(x) for x in w]))
+
+    return dict(
+        alternatives=list(alternatives),
+        criteria=[dict(name=c, type="positive") for c in criteria_names],
+        dms=dms,
+        experts=experts,
+        parameters=dict(alpha=0.95, B=2),
+    )
+
+
+def run_generated_compat3_hives_dhf_compat(
+    n_criteria: int = 8,
+    n_experts: int = 4,
+    n_alternatives: int = 3,
+    seed: int = 42,
+    dhf_method: str = "HHO",
+    output_path: str | None = None,
+    generated_input_path: str | None = None,
+) -> dict:
+    """
+    Порядок выполнения:
+      1) Генератор данных (HIVES+ D(H)F)
+      2) compat3 (равномерные веса)
+      3) HIVES (равномерное влияние экспертов)
+      4) DHF (оптимизация весов экспертов)
+      5) compat3 (оптимизированные веса)
+    Печатает compat3 до/после DHF.
+    """
+    n_criteria = int(n_criteria)
+    n_experts = int(n_experts)
+    n_alternatives = int(n_alternatives)
+    seed = int(seed)
+
+    if n_criteria <= 0 or n_experts <= 0 or n_alternatives <= 0:
+        raise ValueError("n_criteria, n_experts, n_alternatives must be positive")
+
+    dhf_method = str(dhf_method).upper()
+    if dhf_method not in ("GA", "HHO"):
+        raise ValueError("dhf_method must be GA or HHO")
+
+    criteria_names = [f"Criterion_{i+1}" for i in range(n_criteria)]
+    expert_ids = [f"DM{i+1}" for i in range(n_experts)]
+    alternatives = [f"A{i+1}" for i in range(n_alternatives)]
+
+    # 1) GENERATE INPUT
+    hives_data = _generate_hives_payload(criteria_names, expert_ids, alternatives, seed=seed)
+    dhf_data = _generate_dhf_payload(criteria_names, expert_ids, seed=seed)
+
+    combined = dict(
+        hives=hives_data,
+        dhf=dhf_data,
+        combined_parameters=dict(dhf_method=dhf_method),
+    )
+
+    if generated_input_path:
+        Path(generated_input_path).write_text(json.dumps(combined, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"Saved generated input to: {generated_input_path}")
+
+    # Prepare matrices
+    jm, jn, _crit, dm_ids = dhf_json_to_matrices(dhf_data)
+    uniform_w = np.ones(len(dm_ids), dtype=float) / len(dm_ids)
+
+    print("=" * 80)
+    print("EXECUTION ORDER: GENERATOR -> compat3 -> HIVES -> DHF -> compat3")
+    print("=" * 80)
+    print(f"Generated: {n_criteria} criteria, {n_experts} experts, {n_alternatives} alternatives (seed={seed})")
+    print(f"DHF method: {dhf_method}")
+
+    # 2) compat3 (uniform)
+    print("\n" + "=" * 80)
+    print("[STEP 2] compat3 (uniform weights)")
+    print("=" * 80)
+    compat_before = compat3(uniform_w, jm, jn)
+    cons_before = float(min(compat_before))
+    print(f"Consensus level (min): {cons_before:.6f}")
+    print(f"Compatibilities: {[f'{c:.6f}' for c in compat_before]}")
+
+    # 3) HIVES (uniform influence)
+    print("\n" + "=" * 80)
+    print("[STEP 3] HIVES (uniform expert influence)")
+    print("=" * 80)
+    problem = load_decision_problem_from_data(hives_data)
+    A = problem.aggregated_performance()
+    W = problem.weights_matrix()
+    uniform_influence = np.ones(len(expert_ids), dtype=float) / len(expert_ids)
+    res_hives = hives_rank(A=A, W=W, influence=uniform_influence, expert_ids=expert_ids)
+
+    print("\n[HIVES] gamma_scaled (sum=100):")
+    print(np.round(res_hives["gamma_scaled"], 2))
+    print("[HIVES] ranking (1-based):")
+    print(res_hives["ranking"] + 1)
+
+    # 4) DHF (optimize weights)
+    print("\n" + "=" * 80)
+    print("[STEP 4] DHF (optimization of expert weights)")
+    print("=" * 80)
+    dhf_res = optimize_expert_weights(dhf_data, method=dhf_method)
+    print(f"Optimized expert weights: {[f'{w:.4f}' for w in dhf_res.best_weights]}")
+    print(f"Best consensus (from optimizer): {dhf_res.best_consensus:.6f}")
+
+    # 5) compat3 (optimized)
+    print("\n" + "=" * 80)
+    print("[STEP 5] compat3 (optimized weights)")
+    print("=" * 80)
+    compat_after = compat3(dhf_res.best_weights, jm, jn)
+    cons_after = float(min(compat_after))
+    print(f"Consensus level (min): {cons_after:.6f}")
+    print(f"Compatibilities: {[f'{c:.6f}' for c in compat_after]}")
+
+    out = dict(
+        generated=dict(
+            n_criteria=n_criteria,
+            n_experts=n_experts,
+            n_alternatives=n_alternatives,
+            seed=seed,
+            criteria=criteria_names,
+            expert_ids=expert_ids,
+            dhf_method=dhf_method,
+        ),
+        compat3_uniform=dict(consensus=cons_before, compatibilities=[float(x) for x in compat_before]),
+        hives=dict(
+            ranking_1_based=[int(x) for x in (res_hives["ranking"] + 1)],
+            gamma_scaled=[float(x) for x in res_hives["gamma_scaled"]],
+        ),
+        dhf=dict(
+            dm_ids=dhf_res.dm_ids,
+            weights=[float(x) for x in dhf_res.best_weights],
+            best_consensus=float(dhf_res.best_consensus),
+        ),
+        compat3_optimized=dict(consensus=cons_after, compatibilities=[float(x) for x in compat_after]),
+    )
+
+    if output_path:
+        Path(output_path).write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"\nSaved result to: {output_path}")
+
+    return out
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="HIVES и комбинированный HIVES+DHF пайплайн (JSON).")
     sub = parser.add_subparsers(dest="cmd", required=False)
@@ -872,6 +1416,39 @@ def parse_args() -> argparse.Namespace:
     )
     p_hives_compat_dhf.add_argument("json_path", type=str, help="Путь к combined JSON.")
 
+    p_gen_pipeline = sub.add_parser(
+        "gen-compat-hives-dhf-compat",
+        help="Генератор -> compat3 -> HIVES -> DHF -> compat3 (печать compat3 до/после)",
+    )
+    p_gen_pipeline.add_argument("--criteria", type=int, default=8, help="Количество критериев (по умолчанию 8).")
+    p_gen_pipeline.add_argument("--experts", type=int, default=4, help="Количество экспертов/DM (по умолчанию 4).")
+    p_gen_pipeline.add_argument(
+        "--alternatives", type=int, default=3, help="Количество альтернатив (по умолчанию 3)."
+    )
+    p_gen_pipeline.add_argument("--seed", type=int, default=42, help="Seed для генерации (по умолчанию 42).")
+    p_gen_pipeline.add_argument(
+        "--dhf-method", type=str, default="HHO", help="Метод оптимизации весов: GA или HHO (по умолчанию HHO)."
+    )
+    p_gen_pipeline.add_argument(
+        "--output",
+        "-o",
+        type=str,
+        default=None,
+        help="Опционально: сохранить итоговый результат (JSON).",
+    )
+    p_gen_pipeline.add_argument(
+        "--save-input",
+        type=str,
+        default=None,
+        help="Опционально: сохранить сгенерированный combined JSON (HIVES+ D(H)F).",
+    )
+
+    p_pipe = sub.add_parser(
+        "pipeline",
+        help="Pipeline: (step2=remove expert)->compat3->GA+HHO->HIVES, save separate files.",
+    )
+    p_pipe.add_argument("json_path", type=str, help="Путь к combined JSON (ожидается rotation+combined_parameters).")
+
     return parser.parse_args()
 
 
@@ -891,6 +1468,16 @@ if __name__ == "__main__":
         compare_order(args.json_path)
     elif args.cmd == "hives-compat-dhf":
         run_hives_compat3_dhf(args.json_path)
+    elif args.cmd == "gen-compat-hives-dhf-compat":
+        run_generated_compat3_hives_dhf_compat(
+            n_criteria=args.criteria,
+            n_experts=args.experts,
+            n_alternatives=args.alternatives,
+            seed=args.seed,
+            dhf_method=args.dhf_method,
+            output_path=args.output,
+            generated_input_path=args.save_input,
+        )
     elif args.cmd == "hives":
         out = run_hives_from_json(args.json_path)
         if args.output:
@@ -909,8 +1496,10 @@ if __name__ == "__main__":
             )
             Path(args.output).write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
             print(f"\nSaved HIVES result to: {args.output}")
+    elif args.cmd == "pipeline":
+        run_pipeline_replace_ga_hho(args.json_path)
     else:
         raise SystemExit(
-            "Usage: python main.py hives input.json  OR  python main.py combined combined.json  OR  python main.py experiment combined.json  OR  python main.py compare-order combined.json  OR  python main.py hives-compat-dhf combined.json"
+            "Usage: python main.py hives input.json  OR  python main.py combined combined.json  OR  python main.py experiment combined.json  OR  python main.py compare-order combined.json  OR  python main.py hives-compat-dhf combined.json  OR  python main.py gen-compat-hives-dhf-compat"
         )
 

@@ -36,8 +36,12 @@ ENV/
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# Output files (optional - можно раскомментировать если не хотите коммитить результаты)
-# outputs/*.json
+# Output files and generated data
+outputs/
+outputsTest/
+Resulst/
+comparison_results.json
+my_dhfs_data.json
 
 # OS
 .DS_Store

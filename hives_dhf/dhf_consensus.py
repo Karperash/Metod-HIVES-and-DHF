@@ -272,6 +272,7 @@ def genetic_algorithm_optimize(
     desired_consensus: float = 0.907,
     population_size: int = 20,
     max_iterations: int = 500,
+    initial_weights: np.ndarray | None = None,
     min_w: float = 0.01,
     max_w: float = 0.99,
 ) -> Tuple[np.ndarray, float, List[float]]:
@@ -285,6 +286,10 @@ def genetic_algorithm_optimize(
     for _ in range(population_size):
         w = np.random.random(num_dms)
         population.append(_clamp_and_normalize(w, min_w=min_w, max_w=max_w))
+
+    # Seed population with a provided initial solution (so GA doesn't start from uniform/random only)
+    if initial_weights is not None and population_size > 0:
+        population[0] = _clamp_and_normalize(np.asarray(initial_weights, dtype=float), min_w=min_w, max_w=max_w)
 
     for _it in range(max_iterations):
         fitness_scores: List[float] = []
@@ -333,6 +338,7 @@ def hho_optimize(
     desired_consensus: float = 0.907,
     search_agents_no: int = 10,
     max_iter: int = 100,
+    initial_weights: np.ndarray | None = None,
     min_w: float = 0.01,
     max_w: float = 0.99,
 ) -> Tuple[np.ndarray, float, List[float]]:
@@ -348,6 +354,10 @@ def hho_optimize(
     X = np.zeros((search_agents_no, dim), dtype=float)
     for i in range(search_agents_no):
         X[i] = _clamp_and_normalize(np.random.random(dim), min_w=min_w, max_w=max_w)
+
+    # Seed one hawk with provided initial weights
+    if initial_weights is not None and search_agents_no > 0:
+        X[0] = _clamp_and_normalize(np.asarray(initial_weights, dtype=float), min_w=min_w, max_w=max_w)
 
     rabbit_location = best_weights.copy()
     rabbit_energy = float("inf")
@@ -430,6 +440,7 @@ def optimize_expert_weights(
     max_iterations: int | None = None,
     search_agents_no: int | None = None,
     max_iter: int | None = None,
+    initial_weights: np.ndarray | None = None,
     min_w: float = 0.01,
     max_w: float = 0.99,
 ) -> DHFOptimizationResult:
@@ -445,7 +456,14 @@ def optimize_expert_weights(
         pop = int(population_size if population_size is not None else params.get("population_size", 20))
         iters = int(max_iterations if max_iterations is not None else params.get("max_iterations", 500))
         best_w, best_fit, best_comp = genetic_algorithm_optimize(
-            jm, jn, desired_consensus=desired, population_size=pop, max_iterations=iters, min_w=min_w, max_w=max_w
+            jm,
+            jn,
+            desired_consensus=desired,
+            population_size=pop,
+            max_iterations=iters,
+            initial_weights=initial_weights,
+            min_w=min_w,
+            max_w=max_w,
         )
     elif method == "HHO":
         agents = int(
@@ -455,7 +473,14 @@ def optimize_expert_weights(
         )
         iters = int(max_iter if max_iter is not None else params.get("Max_iter", params.get("max_iter", 100)))
         best_w, best_fit, best_comp = hho_optimize(
-            jm, jn, desired_consensus=desired, search_agents_no=agents, max_iter=iters, min_w=min_w, max_w=max_w
+            jm,
+            jn,
+            desired_consensus=desired,
+            search_agents_no=agents,
+            max_iter=iters,
+            initial_weights=initial_weights,
+            min_w=min_w,
+            max_w=max_w,
         )
     else:
         raise ValueError(f"Unknown method: {method}")
