@@ -1,482 +1,253 @@
 # Методы HIVES и DHF для группового принятия решений
 
-Комбинированный подход для ранжирования альтернатив с использованием методов **HIVES** (Hierarchical Voting-based Evaluation System) и **DHF** (Dual Hesitant Fuzzy) консенсуса.
+Проект реализует **HIVES** (иерархическое голосование) и **DHF** (Dual Hesitant Fuzzy) консенсус. Методы можно запускать по отдельности или в комбинации.
 
-## 📋 Содержание
+## Содержание
 
-- [Описание проекта](#описание-проекта)
-- [Структура проекта](#структура-проекта)
 - [Установка](#установка)
-- [Использование](#использование)
+- [1. Запуск только HIVES](#1-запуск-только-hives)
+- [2. Запуск только DHF](#2-запуск-только-dhf)
+- [3. Комбинации методов](#3-комбинации-методов)
 - [Формат входных данных](#формат-входных-данных)
-- [Описание методов](#описание-методов)
-- [Примеры](#примеры)
+- [Структура проекта](#структура-проекта)
 - [Обновление репозитория на GitHub](#обновление-репозитория-на-github)
 
-## 📖 Описание проекта
+---
 
-Проект реализует два метода для группового принятия решений:
-
-1. **HIVES** — метод иерархического голосования для ранжирования альтернатив на основе критериев
-2. **DHF Consensus** — метод консенсуса с двойными нечеткими множествами для оптимизации весов экспертов
-
-Методы могут использоваться как отдельно, так и в комбинации, где DHF оптимизирует веса экспертов, которые затем используются в HIVES для более точного ранжирования.
-
-## 📁 Структура проекта
-
-```
-.
-├── main.py                 # Главный CLI-скрипт
-├── hives_dhf/              # Основной пакет с реализацией методов
-│   ├── __init__.py
-│   ├── hives_method.py     # Реализация метода HIVES
-│   ├── dhf_consensus.py    # Реализация DHF консенсуса (GA/HHO)
-│   ├── json_input.py       # Загрузка данных из JSON
-│   └── models.py           # Модели данных
-├── examples/               # Примеры входных данных
-│   ├── hives/              # Примеры для HIVES
-│   ├── dhf/                # Примеры для DHF
-│   └── combined/           # Примеры для комбинированного метода
-├── outputs/                # Результаты выполнения
-├── docs/                   # Документация и тезисы
-├── notebooks/              # Jupyter notebooks
-└── legacy/                 # Старый код (для справки)
-```
-
-## 🔧 Установка
-
-### Требования
+## Установка
 
 - Python 3.8+
 - NumPy
-
-### Локальная установка
-
-```bash
-pip install numpy
-```
-
-Или используйте файл requirements.txt:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 🚀 Быстрый старт в Google Colab
+---
 
-1. Откройте [Google Colab](https://colab.research.google.com/)
-2. Загрузите ноутбук `notebooks/colab/HIVES_DHF_Colab.ipynb` или используйте прямую ссылку:
-   - Скопируйте содержимое из `notebooks/colab/HIVES_DHF_Colab.ipynb`
-   - Или выполните в первой ячейке:
+## 1. Запуск только HIVES
 
-```python
-# Клонируем репозиторий
-!git clone https://github.com/Karperash/Metod-HIVES-and-DHF.git
-%cd Metod-HIVES-and-DHF
-
-# Устанавливаем зависимости
-!pip install -q numpy
-
-# Запускаем пример
-!python main.py hives examples/hives/input.json
-```
-
-**Альтернативный способ (через GitHub):**
-1. Перейдите на https://github.com/Karperash/Metod-HIVES-and-DHF
-2. Откройте файл `notebooks/colab/HIVES_DHF_Colab.ipynb`
-3. Нажмите кнопку "Open in Colab" (если доступна) или скопируйте содержимое в новый Colab ноутбук
-
-## 🚀 Использование
-
-### 1. Запуск только HIVES
-
+**Через подкоманду:**
 ```bash
 python main.py hives examples/hives/input.json
 ```
 
-Сохранение результата в файл:
+**Сохранение результата в JSON:**
 ```bash
 python main.py hives examples/hives/input.json -o outputs/result.json
 ```
 
-### 2. Запуск комбинированного метода (DHF → HIVES)
+**Краткая форма** (только для HIVES, один аргумент — путь к `.json`):
+```bash
+python main.py examples/hives/input.json
+```
+
+---
+
+## 2. Запуск только DHF
+
+DHF запускается отдельным скриптом:
+
+```bash
+python legacy/main4.py
+```
+
+**Поведение по умолчанию:**
+- Генерирует `my_dhfs_data.json` (6 критериев, 4 эксперта)
+- Запускает GA и HHO для оптимизации весов экспертов
+- Сохраняет сравнение в `comparison_results.json`
+
+**Использование своего DHF-файла** (например `examples/dhf/input_data.json`):  
+В `legacy/main4.py` в функции `main()` закомментируйте вызов `generate_and_save_dhfs_json(...)` и замените `load_input_data("my_dhfs_data.json")` на `load_input_data("examples/dhf/input_data.json")`.
+
+Формат DHF: `criteria`, `dms` с `pairwise_comparisons` (membership / non_membership), `parameters.desired_consensus`.
+
+---
+
+## 3. Комбинации методов
+
+Все команды ниже работают с **combined JSON** (блоки `hives`, `dhf`, при необходимости `rotation`, `combined_parameters`). Пример: `examples/combined/combined_input_program.json`.
+
+### 3.1 DHF → HIVES (`combined`)
 
 ```bash
 python main.py combined examples/combined/combined_input_program.json
 ```
 
-Этот метод:
-1. Оптимизирует веса экспертов с помощью DHF (GA или HHO)
-2. Использует оптимизированные веса в HIVES для ранжирования альтернатив
-3. Вычисляет консенсус до и после HIVES через `compat3`
+DHF оптимизирует веса экспертов (GA или HHO из `combined_parameters.dhf_method`), HIVES ранжирует альтернативы с этими весами. Консенсус до/после — через `compat3`. Путь вывода: `combined_parameters.output_path`.
 
-### 3. Новый порядок выполнения (HIVES → compat3 → DHF)
+---
+
+### 3.2 HIVES → compat3 → DHF (`hives-compat-dhf`)
 
 ```bash
 python main.py hives-compat-dhf examples/combined/combined_input_program.json
 ```
 
-Этот метод:
-1. Выполняет HIVES с равномерными весами экспертов
-2. Проверяет консенсус через `compat3` с равномерными весами
-3. Оптимизирует веса экспертов через DHF
-4. Пересчитывает консенсус с оптимизированными весами
+Сначала HIVES с равномерными весами, затем `compat3`, затем DHF, затем пересчёт консенсуса с оптимизированными весами.
 
-### 4. Эксперимент: сравнение весов экспертов
+---
+
+### 3.3 Сравнение весов (`experiment`)
 
 ```bash
 python main.py experiment examples/combined/combined_input_program.json
 ```
 
-Сравнивает веса экспертов в разных сценариях:
-- HIVES без DHF (равномерные веса)
-- Только DHF (GA)
-- HIVES + DHF без замены
-- HIVES + DHF с заменой (если задан rotation)
+Сравнивает: HIVES без DHF; только DHF (GA); HIVES+DHF без замены; HIVES+DHF с заменой (если задан `rotation`).
 
-### 5. Сравнение порядка выполнения методов
+---
+
+### 3.4 Сравнение порядка DHF↔HIVES (`compare-order`)
 
 ```bash
 python main.py compare-order examples/combined/combined_input_program.json
 ```
 
-Показывает разницу между:
-- DHF → HIVES (обычный порядок)
-- HIVES → DHF (обратный порядок)
+Показывает разницу между порядками: DHF→HIVES и HIVES→DHF.
 
-### 6. Pipeline: замена эксперта (step2 → compat3 → GA+HHO → HIVES)
+---
+
+### 3.5 Pipeline: замена эксперта, GA и HHO отдельно (`pipeline`)
 
 ```bash
 python main.py pipeline path/to/combined_input.json
 ```
 
-Полный пайплайн с заменой эксперта (5→4):
-1. Формирует **step2** — combined JSON без `predecessor_id` (4 эксперта)
-2. Проверяет консенсус через **compat3** (равномерные веса)
-3. Запускает **GA** и **HHO** отдельно (с опциональным seed начальных весов)
+**Требуется:**
+- блок `rotation`: `predecessor_id`, `new_id`, `alpha`, `predecessor_old_lambdas_path`
+- блок `combined_parameters` (опционально: `step2_output_path`, `output_path_ga`, `output_path_hho`)
+
+**Шаги:**
+1. **step2** — combined без `predecessor_id` (удаляется один эксперт, например 5→4 или 7→6)
+2. **compat3** с равномерными весами
+3. **GA** и **HHO** по отдельности (с опциональными начальными весами)
 4. **HIVES** с весами от GA и от HHO + плавная замена (smooth replacement)
-5. Сохраняет: `*_step2.json`, `*_HIVES_GA.json`, `*_HIVES_HHO.json`
+5. Сохранение: `*_step2.json`, `*_HIVES_GA.json`, `*_HIVES_HHO.json`
 
-Требуется блок `rotation` в JSON (`predecessor_id`, `new_id`, `alpha`, `predecessor_old_lambdas_path`). В `combined_parameters` можно задать `step2_output_path`, `output_path_ga`, `output_path_hho`.
+Значения по умолчанию: `step2_output_path=outputs/step2_combined.json`, `output_path_ga=outputs/result_hives_ga.json`, `output_path_hho=outputs/result_hives_hho.json`.
 
-### 7. Генератор данных + compat3 → HIVES → DHF → compat3
+---
+
+### 3.6 Генератор + compat3 → HIVES → DHF → compat3 (`gen-compat-hives-dhf-compat`)
 
 ```bash
 python main.py gen-compat-hives-dhf-compat --criteria 8 --experts 4 --alternatives 3 --save-input outputs/Input.json -o outputs/out.json
 ```
 
-Генерирует синтетические HIVES+DHF данные, прогоняет compat3 до/после DHF, сохраняет вход (`--save-input`) и результат (`-o`).
+Генерирует синтетические HIVES+DHF данные, прогоняет цепочку, при `--save-input` сохраняет вход, при `-o` — итог.
 
-## 📝 Формат входных данных
-
-### Для HIVES (отдельно)
-
-```json
-{
-  "alternatives": ["A1", "A2", "A3"],
-  "criteria": [
-    { "name": "ES", "type": "positive" },
-    { "name": "SS", "type": "positive" }
-  ],
-  "dms": [
-    {
-      "id": "DM1",
-      "scores": [
-        [70, 60],
-        [60, 75],
-        [80, 55]
-      ]
-    }
-  ],
-  "experts": [
-    { "id": "DM1", "weights": [25, 10] },
-    { "id": "DM2", "weights": [10, 25] }
-  ]
-}
-```
-
-### Для комбинированного метода
-
-```json
-{
-  "hives": {
-    "alternatives": ["A1", "A2", "A3"],
-    "criteria": [...],
-    "dms": [...],
-    "experts": [...]
-  },
-  "dhf": {
-    "criteria": ["ES", "SS", "EcS", "IP", "SA", "LTC"],
-    "dms": [
-      {
-        "id": "DM1",
-        "pairwise_comparisons": {
-          "ES": {
-            "ES": { "membership": [0.5], "non_membership": [0.5] },
-            "SS": { "membership": [0.15], "non_membership": [0.8] }
-          }
-        }
-      }
-    ],
-    "parameters": {
-      "desired_consensus": 0.907,
-      "population_size": 20,
-      "max_iterations": 500
-    }
-  },
-  "rotation": {
-    "predecessor_id": "DM1",
-    "new_id": "DM3",
-    "alpha": 0.5,
-    "predecessor_old_lambdas_path": "outputs/prev_result.json"
-  },
-  "combined_parameters": {
-    "dhf_method": "HHO",
-    "influence_mode": "continuous",
-    "influence_min": 0.01,
-    "influence_max": 0.99,
-    "output_path": "outputs/result.json"
-  }
-}
-```
-
-## 🔬 Описание методов
-
-### HIVES (Hierarchical Voting-based Evaluation System)
-
-Метод для ранжирования альтернатив на основе:
-- Оценок альтернатив по критериям (матрица `A`)
-- Весов критериев у экспертов (матрица `W`)
-- Весов экспертов (`influence`)
-
-**Основные шаги:**
-1. Вычисление вкладов экспертов по критериям (λ-матрица)
-2. Вычисление весов критериев (γ)
-3. Вычисление итоговых оценок альтернатив: `score = Σ(оценка × вес_критерия)`
-4. Ранжирование по убыванию оценок
-
-**Особенности:**
-- Поддержка "плавной замены эксперта" (smooth expert replacement)
-- Непрерывное влияние экспертов (continuous influence mode)
-- Социальные ограничения (clamp + normalization)
-
-### DHF Consensus (Dual Hesitant Fuzzy)
-
-Метод оптимизации весов экспертов для достижения консенсуса на основе:
-- Парных сравнений критериев (pairwise comparisons)
-- Двойных нечетких множеств (membership/non-membership)
-
-**Алгоритмы оптимизации:**
-- **GA** (Genetic Algorithm) — генетический алгоритм
-- **HHO** (Harris Hawks Optimization) — алгоритм оптимизации Харриса Хоука
-
-**Функция совместимости:**
-- `compat3` — вычисляет совместимость каждого эксперта
-- Консенсус = минимум из совместимостей
-
-### Комбинированный подход
-
-**Порядок выполнения (DHF → HIVES):**
-1. DHF оптимизирует веса экспертов для достижения консенсуса
-2. Оптимизированные веса передаются в HIVES
-3. HIVES использует эти веса для ранжирования альтернатив
-4. Пересчёт консенсуса через `compat3` с оптимизированными весами
-
-**Результат:**
-- Ранжирование альтернатив с учётом оптимизированных весов экспертов
-- Сравнение консенсуса до и после HIVES
-- Веса критериев (gamma_scaled)
-- Lambda-матрица (вклад экспертов по критериям)
-
-## 📊 Примеры вывода
-
-### Результат HIVES
-
-```
-Raw criterion weights gamma:
-[15.03 15.04 15.07 15.03 15.04 10.1 ]
-
-Scaled criterion weights gamma_scaled (sum = 100):
-[17.62 17.63 17.66 17.62 17.63 11.84]
-
-Final alternative scores:
-  A1: 6409.93
-  A2: 6472.06
-  A3: 6735.72
-
-Ranking (1-based):
-[3 2 1]
-```
-
-### Результат комбинированного метода
-
-```
-[DHF] Best consensus: 0.6454 method: HHO
-[DHF] Weights: {'DM1': 0.2856, 'DM2': 0.3101, 'DM3': 0.4044}
-
-[HIVES] Raw criterion weights gamma:
-[15.03 15.04 15.07 15.03 15.04 10.1 ]
-
-[FINAL RANKING]
-  1. A3 (score: 6735.72)
-  2. A2 (score: 6472.06)
-  3. A1 (score: 6409.93)
-
-[CRITERIA WEIGHTS] (gamma_scaled, sum=100%)
-  ES (Environmental Sustainability): 17.62%
-  SS (Social Sustainability): 17.63%
-  EcS (Economic Sustainability): 17.66%
-  IP (Innovation Potential): 17.61%
-  SA (Strategic Alignment): 17.63%
-  LTC (Long-term Competitiveness): 11.84%
-```
-
-## 🔍 Ключевые понятия
-
-### Scores (оценки альтернатив)
-
-Итоговые оценки альтернатив вычисляются как:
-```
-score_i = Σ(A_ij × gamma_scaled_j)
-```
-где:
-- `A_ij` — оценка альтернативы `i` по критерию `j`
-- `gamma_scaled_j` — вес критерия `j` (сумма = 100%)
-
-Чем выше score, тем лучше альтернатива.
-
-### Consensus (консенсус)
-
-Уровень согласия между экспертами, вычисляемый через `compat3`:
-- Для каждого эксперта вычисляется совместимость
-- Консенсус = минимум из совместимостей
-- Чем выше консенсус (ближе к 1.0), тем больше согласие
-
-### Influence (влияние экспертов)
-
-Веса экспертов, определяющие их вклад в итоговое решение:
-- Оптимизируются через DHF для достижения консенсуса
-- Используются в HIVES для взвешивания вкладов экспертов
-
-### Lambda (λ-матрица)
-
-Матрица вкладов экспертов по критериям:
-- `λ_ij` — вклад эксперта `i` в критерий `j`
-- Сумма по столбцу = 100% для каждого критерия
-
-### Gamma (γ — веса критериев)
-
-Итоговые веса критериев:
-- Вычисляются на основе λ-матрицы и весов критериев у экспертов
-- Масштабируются до суммы 100%
-
-## 🔄 Обновление репозитория на GitHub
-
-Как **полностью обновить** [репозиторий](https://github.com/Karperash/Metod-HIVES-and-DHF): в GitHub окажется ровно то, что в проекте (лишнее будет удалено, новое — добавлено).
-
-### Что понадобится
-
-- **Git** установлен, в проекте выполнен `git init` и настроен `origin`:
-  ```bash
-  git remote -v
-  # origin  https://github.com/Karperash/Metod-HIVES-and-DHF.git (fetch)
-  # origin  https://github.com/Karperash/Metod-HIVES-and-DHF.git (push)
-  ```
-- **Доступ к GitHub**: логин/пароль или токен, либо SSH-ключ (если репо не публичный или есть ограничения).
+**Параметры:** `--criteria`, `--experts`, `--alternatives`, `--seed`, `--dhf-method` (GA | HHO), `--output` / `-o`, `--save-input`.
 
 ---
 
-### Способ 1: скрипт `update_repo.ps1`
+### 3.7 Тесты с разными комбинациями экспертов и критериев
 
-В **PowerShell** откройте **корень проекта** (папка с `main.py`) и выполните:
+Для воспроизведения прогонов, результаты которых лежат в `Result/`, использовались комбинации:
+
+| Комбинация | Папка   | Эксперты × Критерии |
+|------------|---------|----------------------|
+| 5e6c       | 5e6c/   | 5 × 6                |
+| 5e8c       | 5e8c/   | 5 × 8                |
+| 7e6c       | 7e6c/   | 7 × 6                |
+| 7e8c       | 7e8c/   | 7 × 8                |
+
+**Подготовка:**
+- Combined JSON с нужным числом экспертов и критериев (вручную или через генератор, например `gen-compat-hives-dhf-compat --save-input` с подходящими `--experts` и `--criteria`).
+- Блок `rotation` с `predecessor_id`, `new_id`, `alpha`, `predecessor_old_lambdas_path` (путь к предыдущему результату с lambdas или fallback по коду).
+- В `combined_parameters`:
+  - `output_path_ga` = `Result/5e6c/5e6c1ga.json`
+  - `output_path_hho` = `Result/5e6c/5e6c1hho.json`
+  (и аналогично для 5e8c, 7e6c, 7e8c; при 10 прогонах — номера 1…10 в имени файла.)
+
+**Запуск для одного прогона:**
+```bash
+python main.py pipeline path/to/combined_5e6c.json
+```
+
+Один вызов `pipeline` создаёт два файла: `*ga.json` и `*hho.json`. Для 10 прогонов (5e6c1ga … 5e6c10ga, 5e6c1hho … 5e6c10hho) нужно 10 раз задать разные `output_path_ga` и `output_path_hho` в JSON (или скриптом подставлять пути) и каждый раз запустить `pipeline`. Входной combined может быть один и тот же или разный (например, при разном `--seed` у генератора).
+
+**Структура `Result/`:**
+```
+Result/
+├── 5e6c/   # 5 экспертов, 6 критериев: 5e6c1ga.json, 5e6c1hho.json, … 5e6c10ga.json, 5e6c10hho.json
+├── 5e8c/
+├── 7e6c/
+└── 7e8c/
+```
+
+---
+
+## Формат входных данных
+
+### HIVES (отдельно)
+
+`alternatives`, `criteria` (массив `{name, type}`), `dms` (id, `scores`: альтернатива×критерий), `experts` (id, `weights` по критериям). Пример: `examples/hives/input.json`.
+
+### Combined (комбинации и pipeline)
+
+- **hives** — как для HIVES.
+- **dhf** — `criteria`, `dms` с `pairwise_comparisons` (membership / non_membership), `parameters` (desired_consensus и др.).
+- **rotation** (для `pipeline`, `experiment` с заменой): `predecessor_id`, `new_id`, `alpha`, `predecessor_old_lambdas_path`.
+- **combined_parameters**: `dhf_method` (GA|HHO), `influence_mode`, `influence_min`, `influence_max`, `output_path`; для `pipeline` ещё `step2_output_path`, `output_path_ga`, `output_path_hho`.
+
+Пример: `examples/combined/combined_input_program.json`.
+
+---
+
+## Структура проекта
+
+```
+.
+├── main.py              # CLI: hives, combined, experiment, compare-order, hives-compat-dhf, pipeline, gen-compat-hives-dhf-compat
+├── hives_dhf/           # HIVES, DHF, compat3, загрузка JSON
+│   ├── hives_method.py
+│   ├── dhf_consensus.py
+│   ├── json_input.py
+│   └── models.py
+├── examples/
+│   ├── hives/           # input.json
+│   ├── dhf/             # input_data.json
+│   └── combined/        # combined_input_program.json и др.
+├── legacy/
+│   └── main4.py         # Запуск только DHF (GA+HHO, comparison_results.json)
+├── Result/              # Результаты тестов 5e6c, 5e8c, 7e6c, 7e8c (*ga.json, *hho.json)
+├── requirements.txt
+├── .gitignore
+└── update_repo.ps1
+```
+
+---
+
+## Обновление репозитория на GitHub
+
+Актуальное состояние репозитория: [Metod-HIVES-and-DHF](https://github.com/Karperash/Metod-HIVES-and-DHF).
+
+### Скрипт `update_repo.ps1`
+
+В корне проекта (где `main.py`):
 
 ```powershell
 .\update_repo.ps1
 ```
 
-Скрипт:
-
-1. Снимает с отслеживания `outputs/`, `outputsTest/`, `Resulst/`, `comparison_results.json`, `my_dhfs_data.json` (если они есть в репо).
-2. Делает `git add -A` — все новые, изменённые и удалённые файлы.
-3. Показывает `git status`.
-4. Спрашивает **«Commit? (y/n)»** — при `y` создаёт коммит.
-
-**Загрузка в GitHub вручную:**
+Скрипт снимает с отслеживания `outputs/`, `outputsTest/`, `Resulst/`, `comparison_results.json`, `my_dhfs_data.json`, делает `git add -A`, показывает `git status` и спрашивает «Commit? (y/n)». Загрузка на GitHub — вручную:
 
 ```powershell
 git push origin main
 ```
 
-Без вопроса перед коммитом (например, в скриптах):
+Без вопроса: `.\update_repo.ps1 -Force`.
+
+### Вручную
 
 ```powershell
-.\update_repo.ps1 -Force
-```
-
----
-
-### Способ 2: команды вручную
-
-В корне проекта:
-
-```powershell
-# 1) Перестать отслеживать то, что в .gitignore (если уже в репо)
 git rm -r --cached outputs outputsTest Resulst 2>$null
 git rm --cached comparison_results.json my_dhfs_data.json 2>$null
-
-# 2) Взять все изменения (в т.ч. удаления)
 git add -A
-
-# 3) Посмотреть, что попадёт в коммит
 git status
-
-# 4) Создать коммит
 git commit -m "Sync repo with project: ..."
-
-# 5) Отправить на GitHub
 git push origin main
 ```
 
----
-
-### Если `git push` просит логин/пароль
-
-- **HTTPS**: используйте [Personal Access Token](https://github.com/settings/tokens) вместо пароля.
-- **SSH**: настройте ключ и замените `origin` на  
-  `git@github.com:Karperash/Metod-HIVES-and-DHF.git`.
-
----
-
-### Если в GitHub есть коммиты, которых нет у вас
-
-Сначала подтяните их и только потом пушите:
-
-```powershell
-git pull origin main --rebase
-git push origin main
-```
-
-Если появятся конфликты — их нужно разрешить вручную, затем `git add` и `git rebase --continue` (или `git merge --continue`).
-
----
-
-### Что окажется в репозитории
-
-- Исходный код: `main.py`, `hives_dhf/`, `examples/`, `legacy/`, `README.md`, `requirements.txt`, `.gitignore`, `update_repo.ps1`.
-- **Не** попадут (из-за `.gitignore`): `outputs/`, `outputsTest/`, `Resulst/`, `comparison_results.json`, `my_dhfs_data.json`, `__pycache__/` и т.п.
-
-## 📚 Дополнительная информация
-
-- Подробная документация: `docs/README.md`
-- Примеры использования: `examples/`
-- Jupyter notebooks: `notebooks/`
-- **Инструкция для Google Colab**: `notebooks/colab/README_Colab.md` или используйте готовый ноутбук `notebooks/colab/HIVES_DHF_Colab.ipynb`
-
-## 👥 Авторы
-
-Проект разработан на основе методов HIVES и DHF консенсуса.
-
-## 📄 Лицензия
-
-[Указать лицензию при необходимости]
-
+При запросе учётных данных: HTTPS — [Personal Access Token](https://github.com/settings/tokens); SSH — `git@github.com:Karperash/Metod-HIVES-and-DHF.git`. Если в `main` есть чужие коммиты: `git pull origin main --rebase`, затем `git push origin main`.
