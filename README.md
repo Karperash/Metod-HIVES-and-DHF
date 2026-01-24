@@ -215,39 +215,5 @@ Result/
 ├── requirements.txt
 ├── .gitignore
 └── update_repo.ps1
-```
 
----
 
-## Обновление репозитория на GitHub
-
-Актуальное состояние репозитория: [Metod-HIVES-and-DHF](https://github.com/Karperash/Metod-HIVES-and-DHF).
-
-### Скрипт `update_repo.ps1`
-
-В корне проекта (где `main.py`):
-
-```powershell
-.\update_repo.ps1
-```
-
-Скрипт снимает с отслеживания `outputs/`, `outputsTest/`, `Resulst/`, `comparison_results.json`, `my_dhfs_data.json`, делает `git add -A`, показывает `git status` и спрашивает «Commit? (y/n)». Загрузка на GitHub — вручную:
-
-```powershell
-git push origin main
-```
-
-Без вопроса: `.\update_repo.ps1 -Force`.
-
-### Вручную
-
-```powershell
-git rm -r --cached outputs outputsTest Resulst 2>$null
-git rm --cached comparison_results.json my_dhfs_data.json 2>$null
-git add -A
-git status
-git commit -m "Sync repo with project: ..."
-git push origin main
-```
-
-При запросе учётных данных: HTTPS — [Personal Access Token](https://github.com/settings/tokens); SSH — `git@github.com:Karperash/Metod-HIVES-and-DHF.git`. Если в `main` есть чужие коммиты: `git pull origin main --rebase`, затем `git push origin main`.
